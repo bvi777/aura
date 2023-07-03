@@ -11,12 +11,17 @@ import (
 )
 
 func main() {
+	data := make([]byte, 0)
+	var (
+		rate       int
+		inByte, cs byte
+	)
 	i2c := machine.I2C1
 	err := i2c.Configure(machine.I2CConfig{
 		Frequency: machine.TWI_FREQ_400KHZ,
 	})
 	if err != nil {
-		println("lcd error")
+		println("i2c error")
 	}
 
 	lcd := hd44780i2c.New(machine.I2C1, 0x3f)
@@ -30,28 +35,23 @@ func main() {
 		println("lcd error")
 	}
 
-	lcd.Print([]byte("***   AURA   ***\n" + "Flow rate meter"))
-	time.Sleep(time.Millisecond * 3000)
-	lcd.ClearDisplay()
-	lcd.Print([]byte("Air rate:\n0.00 l/min"))
-
 	led := machine.NEOPIXEL // for zero
 	// led := machine.LED // for pico
 	led.Configure(machine.PinConfig{Mode: machine.PinOutput})
-
-	uart := machine.UART0
-	uart.Configure(machine.UARTConfig{BaudRate: 9600})
-
-	data := make([]byte, 0)
-	var rate int
-	var inByte, cs byte
 
 	rgb := ws2812.New(machine.NEOPIXEL)
 	color1 := []color.RGBA{color.RGBA{255, 0, 0, 0xff}}
 	color2 := []color.RGBA{color.RGBA{0, 255, 0, 0xff}}
 
-	for {
+	uart := machine.UART0
+	uart.Configure(machine.UARTConfig{BaudRate: 9600})
 
+	lcd.Print([]byte("***   AURA   ***\nFlow rate meter"))
+	time.Sleep(time.Millisecond * 3000)
+	lcd.ClearDisplay()
+	lcd.Print([]byte("Air rate:\n0.00 l/min"))
+
+	for {
 		// led.Low()
 		time.Sleep(time.Millisecond * 100)
 		rgb.WriteColors(color1)
@@ -59,10 +59,6 @@ func main() {
 		// led.High()
 		time.Sleep(time.Millisecond * 100)
 		rgb.WriteColors(color2)
-
-		if err != nil {
-			println("lcd error")
-		}
 
 		data = nil
 		cs = 0
