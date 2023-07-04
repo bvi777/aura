@@ -1,8 +1,8 @@
 ### aura air flow meter proc
 - Connections:  
   I2C LCD:  
-  SDA: D3  
-  SCL: D4  
+  SDA: D2  
+  SCL: D3  
   UART0:  
   TX: D0  
   RX: D1  
