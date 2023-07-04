@@ -3,7 +3,7 @@
   I2C LCD:  
   SDA: D2  
   SCL: D3  
-  UART0:  
+  UART:  
   TX: D0  
   RX: D1  
 - Compile & flash:  
